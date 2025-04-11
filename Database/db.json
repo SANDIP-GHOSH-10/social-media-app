@@ -1,0 +1,26 @@
+{
+  "auth": [
+    {
+      "id": "1",
+      "name": "Sandip Ghosh",
+      "email": "sghosh@gmail.com",
+      "password": "123456789"
+    },
+    {
+      "id": "db27",
+      "name": "Dishan Sengupta",
+      "email": "sengupta123@gmail.com",
+      "password": "12345679"
+    },
+    {
+      "id": "a245",
+      "email": "sengupta@123",
+      "password": "123456789"
+    },
+    {
+      "id": "a0a9",
+      "email": "sengupta@123",
+      "password": "12345789"
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import Registration from '../Auth/Registration';
 import Show from '../pages/Show';
 import UpdateBlog from '../pages/UpdateBlog';
 import AddBlogs from '../pages/AddBlogs';
+import Profile from '../pages/Players';
 
 
 const Routing = () => {
@@ -21,6 +22,7 @@ const Routing = () => {
         <Route path="/show" element={<Show/>} />
         <Route path="/update/:id" element={<UpdateBlog/>} />
         <Route path="/add-blog" element={<AddBlogs/>} />
+        <Route path="/profile" element={<Profile/>} />
         
         {/* <Route path='*' element={<PageNotFound/>}></Route> */}
         

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../Redux/Slice/AuthSlice'; // Import your login action
+import { loginUser } from '../Redux/Slice/AuthSlice';
 import { Box, Container, TextField, Typography, Button, Paper } from '@mui/material';
 import Swal from 'sweetalert2';
 
@@ -9,62 +9,51 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // State to handle form input
   const [inputState, setInputState] = useState({
     email: '',
     password: '',
   });
 
-  // State for validation errors
   const [errors, setErrors] = useState({
     email: '',
     password: '',
   });
 
-  // Redux state for loading and errors
-  const { isLoading, error, loginValue } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.auth);
 
-  // Handle input change and validation
   const changeHandler = (event) => {
-    let { name, value } = event.target;
+    const { name, value } = event.target;
     let errMsg = {};
 
     switch (name) {
       case 'email':
-        if (value.length < 1) errMsg.email = 'Email is required.';
-        else errMsg.email = '';
+        errMsg.email = value ? '' : 'Email is required.';
         break;
-
       case 'password':
-        if (value.length < 1) errMsg.password = 'Password is required.';
+        if (!value) errMsg.password = 'Password is required.';
         else if (value.length < 8) errMsg.password = 'Minimum 8 characters.';
         else errMsg.password = '';
         break;
-
       default:
         break;
     }
+
     setInputState({
       ...inputState,
       [name]: value,
     });
+
     setErrors({ ...errors, ...errMsg });
   };
 
-  // Handle form submit
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check for validation errors before dispatching
-    if (!inputState.email || !inputState.password) {
-      return;
-    }
+    if (!inputState.email || !inputState.password) return;
 
-    // Dispatch login action
-    await dispatch(loginUser(inputState));
+    const result = await dispatch(loginUser(inputState));
 
-    // Handle login success or failure
-    if (loginValue) {
+    if (loginUser.fulfilled.match(result)) {
       Swal.fire({
         icon: 'success',
         title: 'Login Successful',
@@ -72,12 +61,12 @@ const Login = () => {
         timer: 2000,
         showConfirmButton: false,
       });
-      setTimeout(() => navigate('/'), 3000); // Redirect to homepage after successful login
+      setTimeout(() => navigate('/'), 3000);
     } else {
       Swal.fire({
         icon: 'error',
         title: 'Login Failed',
-        text: error || 'Invalid email or password. Please try again.',
+        text: result.payload || 'Invalid email or password. Please try again.',
       });
     }
   };
@@ -95,7 +84,6 @@ const Login = () => {
         py: 4,
       }}
     >
-      {/* Overlay */}
       <Box
         sx={{
           position: 'absolute',
@@ -171,8 +159,9 @@ const Login = () => {
                 textTransform: 'none',
                 fontSize: '16px',
               }}
+              disabled={isLoading}
             >
-              Login
+              {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
 
@@ -189,6 +178,222 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { loginUser } from '../Redux/Slice/AuthSlice'; // Import your login action
+// import { Box, Container, TextField, Typography, Button, Paper } from '@mui/material';
+// import Swal from 'sweetalert2';
+
+// const Login = () => {
+//   const dispatch = useDispatch();
+//   const navigate = useNavigate();
+
+//   // State to handle form input
+//   const [inputState, setInputState] = useState({
+//     email: '',
+//     password: '',
+//   });
+
+//   // State for validation errors
+//   const [errors, setErrors] = useState({
+//     email: '',
+//     password: '',
+//   });
+
+//   // Redux state for loading and errors
+//   const { isLoading, error, loginValue } = useSelector((state) => state.auth);
+
+//   // Handle input change and validation
+//   const changeHandler = (event) => {
+//     let { name, value } = event.target;
+//     let errMsg = {};
+
+//     switch (name) {
+//       case 'email':
+//         if (value.length < 1) errMsg.email = 'Email is required.';
+//         else errMsg.email = '';
+//         break;
+
+//       case 'password':
+//         if (value.length < 1) errMsg.password = 'Password is required.';
+//         else if (value.length < 8) errMsg.password = 'Minimum 8 characters.';
+//         else errMsg.password = '';
+//         break;
+
+//       default:
+//         break;
+//     }
+//     setInputState({
+//       ...inputState,
+//       [name]: value,
+//     });
+//     setErrors({ ...errors, ...errMsg });
+//   };
+
+//   // Handle form submit
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
+
+//     // Check for validation errors before dispatching
+//     if (!inputState.email || !inputState.password) {
+//       return;
+//     }
+
+//     // Dispatch login action
+//     await dispatch(loginUser(inputState));
+
+//     // Handle login success or failure
+//     if (loginValue) {
+//       Swal.fire({
+//         icon: 'success',
+//         title: 'Login Successful',
+//         text: 'Welcome back!',
+//         timer: 2000,
+//         showConfirmButton: false,
+//       });
+//       setTimeout(() => navigate('/'), 3000); // Redirect to homepage after successful login
+//     } else {
+//       Swal.fire({
+//         icon: 'error',
+//         title: 'Login Failed',
+//         text: error || 'Invalid email or password. Please try again.',
+//       });
+//     }
+//   };
+
+//   return (
+//     <Box
+//       sx={{
+//         minHeight: '100vh',
+//         backgroundImage: 'url("Asset/login.jpg")',
+//         backgroundSize: 'cover',
+//         backgroundPosition: 'center',
+//         display: 'flex',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         py: 4,
+//       }}
+//     >
+//       {/* Overlay */}
+//       <Box
+//         sx={{
+//           position: 'absolute',
+//           top: 0,
+//           left: 0,
+//           width: '100%',
+//           height: '100%',
+//           backdropFilter: 'blur(7px)',
+//           zIndex: 1,
+//         }}
+//       ></Box>
+
+//       <Container maxWidth="sm" sx={{ zIndex: 2 }}>
+//         <Paper
+//           elevation={6}
+//           sx={{
+//             p: 4,
+//             borderRadius: 5,
+//             backgroundColor: 'rgba(255, 255, 255, 0.5)',
+//             boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.3)',
+//           }}
+//         >
+//           <Typography
+//             variant="h4"
+//             align="center"
+//             gutterBottom
+//             sx={{
+//               fontWeight: 'bold',
+//               color: '#4CAF50',
+//               textShadow: '1px 2px 4px rgba(0, 0, 0, 0.4)',
+//             }}
+//           >
+//             Cricket Zone
+//           </Typography>
+//           <Typography variant="body1" align="center" sx={{ mb: 3 }}>
+//             Enter your login credentials to proceed.
+//           </Typography>
+
+//           <form onSubmit={handleSubmit}>
+//             <TextField
+//               fullWidth
+//               variant="outlined"
+//               label="Email"
+//               name="email"
+//               value={inputState.email}
+//               onChange={changeHandler}
+//               error={!!errors.email}
+//               helperText={errors.email}
+//               sx={{ mb: 3 }}
+//             />
+
+//             <TextField
+//               fullWidth
+//               variant="outlined"
+//               type="password"
+//               label="Password"
+//               name="password"
+//               value={inputState.password}
+//               onChange={changeHandler}
+//               error={!!errors.password}
+//               helperText={errors.password}
+//               sx={{ mb: 3 }}
+//             />
+
+//             <Button
+//               type="submit"
+//               variant="contained"
+//               color="success"
+//               fullWidth
+//               sx={{
+//                 py: 1.5,
+//                 fontWeight: 'bold',
+//                 textTransform: 'none',
+//                 fontSize: '16px',
+//               }}
+//             >
+//               Login
+//             </Button>
+//           </form>
+
+//           <Typography align="center" sx={{ mt: 2, color: '#555', fontSize: '14px' }}>
+//             Not registered?{' '}
+//             <Link to="/reg" style={{ textDecoration: 'none', color: '#4CAF50' }}>
+//               Create an account
+//             </Link>
+//           </Typography>
+//         </Paper>
+//       </Container>
+//     </Box>
+//   );
+// };
+
+// export default Login;
 
 
 

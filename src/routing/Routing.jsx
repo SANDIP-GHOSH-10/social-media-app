@@ -5,6 +5,9 @@ import Footer from '../layout/Footer';
 import Home from '../pages/Home';
 import Login from '../Auth/Login';
 import Registration from '../Auth/Registration';
+import Show from '../pages/Show';
+import UpdateBlog from '../pages/UpdateBlog';
+import AddBlogs from '../pages/AddBlogs';
 
 
 const Routing = () => {
@@ -15,6 +18,9 @@ const Routing = () => {
         <Route path="/" element={<Home/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Registration/>} />
+        <Route path="/show" element={<Show/>} />
+        <Route path="/update/:id" element={<UpdateBlog/>} />
+        <Route path="/add-blog" element={<AddBlogs/>} />
         
         {/* <Route path='*' element={<PageNotFound/>}></Route> */}
         

@@ -1,7 +1,12 @@
+
+
+
+
+
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const Api = "http://localhost:1000/auth"
+const Api = "http://localhost:1000/auth";
 
 // Registration
 export const registerUser = createAsyncThunk('auth/registerUser', async (data) => {
@@ -11,10 +16,25 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (data) =
 });
 
 // Login
-export const loginUser = createAsyncThunk('auth/loginUser', async (data) => {
-  const res = await axios.post(Api, data);
-  console.log("Axios response for Login", res);
-  return res?.data;  
+export const loginUser = createAsyncThunk('auth/loginUser', async (data, { rejectWithValue }) => {
+  try {
+    const res = await axios.get(Api); // Fetch all users
+    const users = res.data;
+
+    const user = users.find(
+      (u) =>
+        u.email === data.email &&
+        u.password === data.password
+    );
+
+    if (!user) {
+      return rejectWithValue("Invalid email or password");
+    }
+
+    return user; // Return the matched user
+  } catch (error) {
+    return rejectWithValue("An error occurred during login");
+  }
 });
 
 const initialState = {
@@ -22,7 +42,7 @@ const initialState = {
   error: null,
   regValue: [],
   loginValue: [],
-  user: null,  
+  user: null,
 };
 
 export const authSlice = createSlice({
@@ -33,23 +53,20 @@ export const authSlice = createSlice({
       state.user = null;
     },
     setUser: (state, action) => {
-      state.user = action.payload;  
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
-
     // Registration
     builder.addCase(registerUser.pending, (state) => {
       state.isLoading = true;
     });
     builder.addCase(registerUser.fulfilled, (state, action) => {
-      console.log("Action for fulfilled:", action);
       state.isLoading = false;
       state.regValue = action.payload;
       state.error = null;
     });
     builder.addCase(registerUser.rejected, (state, action) => {
-      console.log("Action for rejected:", action);
       state.isLoading = false;
       state.error = action.error.message;
     });
@@ -59,22 +76,225 @@ export const authSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
-      console.log("Action for fulfilled:", action);
       state.isLoading = false;
       state.loginValue = action.payload;
       state.error = null;
-      state.user = action.payload;  
+      state.user = action.payload;
     });
     builder.addCase(loginUser.rejected, (state, action) => {
-      console.log("Action for rejected:", action);
       state.isLoading = false;
-      state.error = action.error.message;
+      state.error = action.payload;
     });
   },
 });
 
 export const { logoutUser, setUser } = authSlice.actions;
 export default authSlice.reducer;
+
+
+
+
+
+
+
+// import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+// import axios from "axios";
+
+// const RegisterApi = "http://localhost:1000/auth"; // For registration
+// const UsersApi = "http://localhost:1000/users";   // For login check
+
+// // ✅ Registration - Still a POST request
+// export const registerUser = createAsyncThunk('auth/registerUser', async (data) => {
+//   const res = await axios.post(RegisterApi, data);
+//   console.log("Axios response for Registration", res);
+//   return res?.data;
+// });
+
+// // ✅ Login - GET request to match email & password
+// export const loginUser = createAsyncThunk('auth/loginUser', async (data, thunkAPI) => {
+//   const { email, password } = data;
+
+//   try {
+//     const res = await axios.get(`${UsersApi}?email=${email}&password=${password}`);
+//     console.log("Axios response for Login", res);
+
+//     if (res.data.length > 0) {
+//       return res.data[0]; // Found a matching user
+//     } else {
+//       return thunkAPI.rejectWithValue("Invalid email or password.");
+//     }
+//   } catch (error) {
+//     return thunkAPI.rejectWithValue("Login failed. Please try again.");
+//   }
+// });
+
+// const initialState = {
+//   isLoading: false,
+//   error: null,
+//   regValue: [],
+//   loginValue: null,
+//   user: null,
+// };
+
+// export const authSlice = createSlice({
+//   name: "auth",
+//   initialState,
+//   reducers: {
+//     logoutUser: (state) => {
+//       state.user = null;
+//       state.loginValue = null;
+//     },
+//     setUser: (state, action) => {
+//       state.user = action.payload;
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     // Registration
+//     builder.addCase(registerUser.pending, (state) => {
+//       state.isLoading = true;
+//     });
+//     builder.addCase(registerUser.fulfilled, (state, action) => {
+//       state.isLoading = false;
+//       state.regValue = action.payload;
+//       state.error = null;
+//     });
+//     builder.addCase(registerUser.rejected, (state, action) => {
+//       state.isLoading = false;
+//       state.error = action.error.message;
+//     });
+
+//     // Login
+//     builder.addCase(loginUser.pending, (state) => {
+//       state.isLoading = true;
+//     });
+//     builder.addCase(loginUser.fulfilled, (state, action) => {
+//       state.isLoading = false;
+//       state.loginValue = action.payload;
+//       state.user = action.payload;
+//       state.error = null;
+//     });
+//     builder.addCase(loginUser.rejected, (state, action) => {
+//       state.isLoading = false;
+//       state.error = action.payload; // use rejectWithValue error
+//       state.loginValue = null;
+//     });
+//   },
+// });
+
+// export const { logoutUser, setUser } = authSlice.actions;
+// export default authSlice.reducer;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+// import axios from "axios";
+
+// const Api = "http://localhost:1000/auth"
+
+// // Registration
+// export const registerUser = createAsyncThunk('auth/registerUser', async (data) => {
+//   const res = await axios.post(Api, data);
+//   console.log("Axios response for Registration", res);
+//   return res?.data;
+// });
+
+// // Login
+// export const loginUser = createAsyncThunk('auth/loginUser', async (data) => {
+//   const res = await axios.post(Api, data);
+//   console.log("Axios response for Login", res);
+//   const users = res.data;
+//   const user = users.find(
+//     (u) =>
+//         u.email === data.email &&
+//         u.password === data.password
+
+// );
+
+// if (!user) {
+//     throw new Error("Invalid email, password, or phone number");
+// }
+
+//   return res?.data;  
+// });
+
+// const initialState = {
+//   isLoading: false,
+//   error: null,
+//   regValue: [],
+//   loginValue: [],
+//   user: null,  
+// };
+
+// export const authSlice = createSlice({
+//   name: 'auth',
+//   initialState,
+//   reducers: {
+//     logoutUser: (state) => {
+//       state.user = null;
+//     },
+//     setUser: (state, action) => {
+//       state.user = action.payload;  
+//     },
+//   },
+//   extraReducers: (builder) => {
+
+//     // Registration
+//     builder.addCase(registerUser.pending, (state) => {
+//       state.isLoading = true;
+//     });
+//     builder.addCase(registerUser.fulfilled, (state, action) => {
+//       console.log("Action for fulfilled:", action);
+//       state.isLoading = false;
+//       state.regValue = action.payload;
+//       state.error = null;
+//     });
+//     builder.addCase(registerUser.rejected, (state, action) => {
+//       console.log("Action for rejected:", action);
+//       state.isLoading = false;
+//       state.error = action.error.message;
+//     });
+
+//     // Login
+//     builder.addCase(loginUser.pending, (state) => {
+//       state.isLoading = true;
+//     });
+//     builder.addCase(loginUser.fulfilled, (state, action) => {
+//       console.log("Action for fulfilled:", action);
+//       state.isLoading = false;
+//       state.loginValue = action.payload;
+//       state.error = null;
+//       state.user = action.payload;  
+//     });
+//     builder.addCase(loginUser.rejected, (state, action) => {
+//       console.log("Action for rejected:", action);
+//       state.isLoading = false;
+//       state.error = action.error.message;
+//     });
+//   },
+// });
+
+// export const { logoutUser, setUser } = authSlice.actions;
+// export default authSlice.reducer;
 
 
 

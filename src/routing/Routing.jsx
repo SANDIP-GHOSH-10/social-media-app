@@ -24,7 +24,6 @@ const Routing = () => {
         <Route path="/post/new" element={<AddBlogs/>} />
         <Route path="/profile" element={<Profile/>} />
         
-        {/* <Route path='*' element={<PageNotFound/>}></Route> */}
         
       </Routes>
       <Footer/>

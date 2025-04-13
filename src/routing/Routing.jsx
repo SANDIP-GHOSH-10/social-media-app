@@ -21,7 +21,7 @@ const Routing = () => {
         <Route path="/register" element={<Registration/>} />
         <Route path="/show" element={<Show/>} />
         <Route path="/update/:id" element={<UpdateBlog/>} />
-        <Route path="/add-blog" element={<AddBlogs/>} />
+        <Route path="/post/new" element={<AddBlogs/>} />
         <Route path="/profile" element={<Profile/>} />
         
         {/* <Route path='*' element={<PageNotFound/>}></Route> */}

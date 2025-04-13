@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import GroupsIcon from '@mui/icons-material/Groups';
 import { useDispatch, useSelector } from "react-redux";  
 import {
   AppBar, Toolbar, Typography, IconButton, Menu,
@@ -9,7 +10,7 @@ import {
   Avatar
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import SportsCricketIcon from "@mui/icons-material/SportsCricket";
+
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { logoutUser } from "../Redux/Slice/AuthSlice";  
 
@@ -30,10 +31,8 @@ const Header = () => {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "About Us", path: "/about" },
     { name: "Profile", path: "/profile" },
-    { name: "Add Blogs", path: "/add-blog" },
-    { name: "Contact", path: "/contactus" },
+    { name: "New Post", path: "/post/new" },
   ];
 
   return (
@@ -42,7 +41,8 @@ const Header = () => {
         <Container maxWidth="lg">
           <Toolbar disableGutters>
             <Box display="flex" alignItems="center" sx={{ flexGrow: 1 }}>
-              <SportsCricketIcon sx={{ fontSize: 40, color: "#4caf50", mr: 1 }} />
+            <GroupsIcon sx={{ fontSize: 40, color: "#ffffff", mr: 1 }} />
+
               <Typography
                 variant="h5"
                 component={Link}
@@ -54,7 +54,7 @@ const Header = () => {
                   display: { xs: "none", md: "block" },
                 }}
               >
-                CricketZone
+                Social Media
               </Typography>
             </Box>
 
